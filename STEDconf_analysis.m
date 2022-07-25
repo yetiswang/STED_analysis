@@ -1,7 +1,12 @@
-%Load paths
-% path = 'C:\Users\Yuyang\Dropbox\STED data\20201008\sm400-APTES';
-% image = 'overview_3C_30%_STED.msr';
-% image_path = [path,'\',image];
+%% These codes were developed by Yuyang Wang to analyze the data presented in the ACS paper Multicolor Super-resolution microscopy of protein corona on single nanoparticles.
+%  The following codes involve full image analysis of STED and confocal microscopy data collected from Abberior Expertline STED microscope and Imspector software. 
+%  A simple outline of the script is as below:
+%  ----- Image import with Bioformat Toolbox for Matlab, extraction of useful metadata for automated plotting and calculation
+%  ----- Multicolor image plotting 
+%  ----- Single particle recognition based on circle detection algorithm and near-neighbour distance filtering. A visualization handle is used for ease of evaluation
+%  ----- Cross-talk correction based on experimentally determined parameters and generation of corrected results.
+% For any questions, please contact Yuyang at y.wang8@tue.nl. 
+
 
 %Load image from file and get metadata
 data = bfopen();
@@ -468,10 +473,6 @@ saveas(gcf,'finalcornorm_distribution.fig')
 saveas(gcf,'finalcornorm_distribution.png')
 
 
-%cormat_norm = [ cormat(1,:)./(cormat(1,:)+ cormat(2,:) + cormat(3,:));...
-%    cormat(2,:)./(cormat(1,:)+cormat(2,:) + cormat(3,:));...
-%    cormat(3,:)./(cormat(1,:)+cormat(2,:) + cormat(3,:))];
-
 figure
 subplot(1,3,1)
 scatter(Red_perc,Orange_perc)
@@ -502,10 +503,6 @@ DOL_chromeo = 3;
      intenscor_matrix(2,:)./(ext_orange*phi_orange*DOL_orange); ...
      intenscor_matrix(3,:)./(ext_chromeo*phi_chromeo*DOL_chromeo)];
 
-% including correction for laser power
-%cormat = [ intenscor_matrix(1,:)./(ext_red*phi_red*DOL_red); ...
-%    intenscor_matrix(2,:)./(ext_orange*phi_orange*DOL_orange).*0.93/0.41; ...
-%    intenscor_matrix(3,:)./(ext_chromeo*phi_chromeo*DOL_chromeo).*0.93/0.61];
 
 figure
 histogram(cormat(1,:), 'Binwidth', 0.0001)
@@ -604,16 +601,3 @@ sgtitle('Cytofluorograms Star Red only')
 set(gcf,'position',[100, 100, 2000, 500])
 saveas(gcf,'cytofluorograms.fig')
 saveas(gcf,'cytofluorograms.png')
-
-% %data = bfGetReader(image_path);
-% %omeMeta = data.getMetadataStore();
-% % meta-data extraction
-% stackSizeX = omeMeta.getPixelsSizeX(0).getValue(); % image width, pixels
-% stackSizeY = omeMeta.getPixelsSizeY(0).getValue(); % image height, pixels
-% stackSizeZ = omeMeta.getPixelsSizeZ(0).getValue(); % number of Z slices
-% 
-% voxelSizeXdefaultValue = omeMeta.getPixelsPhysicalSizeX(0).value();           % returns value in default unit
-% voxelSizeXdefaultUnit = omeMeta.getPixelsPhysicalSizeX(0).unit().getSymbol(); % returns the default unit type. Note: .st files use mm as unit, instead of anstrom.  
-% voxelSizeXdouble = double(voxelSizeXdefaultValue);
-% 
-% disp(['Pixel size is ', num2str(voxelSizeXdouble*1e4,2), ' micrometer' ]  ) % for .st files, pixel value should be multiplied by 10000. 
